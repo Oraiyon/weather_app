@@ -6,7 +6,9 @@ const area = document.querySelector(".area");
 const weatherIcon = document.querySelector(".weatherIcon");
 const currentWeather = document.querySelector(".currentWeather");
 const currentTemp = document.querySelector(".currentTemp");
-const precipitation = document.querySelector(".precipitation");
+const rain = document.querySelector(".rain");
+const snow = document.querySelector(".snow");
+const futureDay = document.querySelectorAll(".futureDay");
 
 const displayArea = (place) => {
   const name = place.location.name;
@@ -26,18 +28,39 @@ const displayCurrentTemp = (place) => {
   currentTemp.innerText = `${place.current.temp_f} °F`;
 };
 
-const displayPrecipitation = (place) => {
-  precipitation.innerText = `Precip: ${place.current.precip_in} in`;
+const displayRainAndSnow = (place) => {
+  if (place.forecast.forecastday[0].day.daily_chance_of_rain > 0) {
+    rain.innerText = `Chance Of Rain: ${place.forecast.forecastday[0].day.daily_chance_of_rain}%`;
+  }
+  if (place.forecast.forecastday[0].day.daily_chance_of_snow > 0) {
+    snow.innerText = `Chance Of Snow: ${place.forecast.forecastday[0].day.daily_chance_of_snow}%`;
+  }
 };
 
 const switchMeasurements = (place) => {
   fahrenheit.addEventListener("click", () => {
     currentTemp.innerText = `${place.current.temp_f} °F`;
-    precipitation.innerText = `Precip: ${place.current.precip_in} in`;
   });
   celsius.addEventListener("click", () => {
     currentTemp.innerText = `${place.current.temp_c} °C`;
-    precipitation.innerText = `Precip: ${place.current.precip_mm} mm`;
+  });
+};
+
+const displayFutureDay = () => {
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const today = new Date().getDay();
+  futureDay.forEach((day, index) => {
+    const dayOfWeek = days[today + index + 1];
+    day.innerText = dayOfWeek;
   });
 };
 
@@ -46,14 +69,15 @@ const displayInfo = (place) => {
   displayWeatherIcon(place);
   displayCurrentWeather(place);
   displayCurrentTemp(place);
-  displayPrecipitation(place);
+  displayRainAndSnow(place);
   switchMeasurements(place);
+  displayFutureDay();
 };
 
 const fetchWeather = async (location) => {
   try {
     const response = await fetch(
-      `https://api.weatherapi.com/v1/current.json?key=f4c93d4e6e0043c29fe45029232209&q=${location}`,
+      `https://api.weatherapi.com/v1/forecast.json?key=f4c93d4e6e0043c29fe45029232209&days=4&q=${location}`,
     );
     const weatherData = await response.json();
     console.log(weatherData);
