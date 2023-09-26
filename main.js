@@ -10,6 +10,7 @@ const rain = document.querySelector(".rain");
 const snow = document.querySelector(".snow");
 const futureDay = document.querySelectorAll(".futureDay");
 const futureWeatherIcons = document.querySelectorAll(".futureWeatherIcon");
+const futureTemp = document.querySelectorAll(".futureTemp");
 
 const displayArea = (place) => {
   const name = place.location.name;
@@ -41,9 +42,15 @@ const displayRainAndSnow = (place) => {
 const switchMeasurements = (place) => {
   fahrenheit.addEventListener("click", () => {
     currentTemp.innerText = `${place.current.temp_f} °F`;
+    futureTemp.forEach((temp, index) => {
+      temp.innerText = `${place.forecast.forecastday[index].day.avgtemp_f} °F`;
+    });
   });
   celsius.addEventListener("click", () => {
     currentTemp.innerText = `${place.current.temp_c} °C`;
+    futureTemp.forEach((temp, index) => {
+      temp.innerText = `${place.forecast.forecastday[index].day.avgtemp_c} °C`;
+    });
   });
 };
 
@@ -71,6 +78,12 @@ const displayNextWeathers = (place) => {
   });
 };
 
+const displayNextTemp = (place) => {
+  futureTemp.forEach((temp, index) => {
+    temp.innerText = `${place.forecast.forecastday[index].day.avgtemp_f} °F`;
+  });
+};
+
 const displayInfo = (place) => {
   displayArea(place);
   displayWeatherIcon(place);
@@ -80,6 +93,7 @@ const displayInfo = (place) => {
   switchMeasurements(place);
   displayNextDays();
   displayNextWeathers(place);
+  displayNextTemp(place);
 };
 
 const fetchWeather = async (location) => {
