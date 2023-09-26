@@ -9,6 +9,7 @@ const currentTemp = document.querySelector(".currentTemp");
 const rain = document.querySelector(".rain");
 const snow = document.querySelector(".snow");
 const futureDay = document.querySelectorAll(".futureDay");
+const futureWeatherIcons = document.querySelectorAll(".futureWeatherIcon");
 
 const displayArea = (place) => {
   const name = place.location.name;
@@ -46,7 +47,7 @@ const switchMeasurements = (place) => {
   });
 };
 
-const displayFutureDay = () => {
+const displayNextDays = () => {
   const days = [
     "Sunday",
     "Monday",
@@ -64,6 +65,12 @@ const displayFutureDay = () => {
   });
 };
 
+const displayNextWeathers = (place) => {
+  futureWeatherIcons.forEach((icon, index) => {
+    icon.src = place.forecast.forecastday[index].day.condition.icon;
+  });
+};
+
 const displayInfo = (place) => {
   displayArea(place);
   displayWeatherIcon(place);
@@ -71,7 +78,8 @@ const displayInfo = (place) => {
   displayCurrentTemp(place);
   displayRainAndSnow(place);
   switchMeasurements(place);
-  displayFutureDay();
+  displayNextDays();
+  displayNextWeathers(place);
 };
 
 const fetchWeather = async (location) => {
