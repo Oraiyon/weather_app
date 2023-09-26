@@ -43,13 +43,17 @@ const switchMeasurements = (place) => {
   fahrenheit.addEventListener("click", () => {
     currentTemp.innerText = `${place.current.temp_f} °F`;
     futureTemp.forEach((temp, index) => {
-      temp.innerText = `${place.forecast.forecastday[index].day.avgtemp_f} °F`;
+      temp.innerText = `${
+        place.forecast.forecastday[index + 1].day.avgtemp_f
+      } °F`;
     });
   });
   celsius.addEventListener("click", () => {
     currentTemp.innerText = `${place.current.temp_c} °C`;
     futureTemp.forEach((temp, index) => {
-      temp.innerText = `${place.forecast.forecastday[index].day.avgtemp_c} °C`;
+      temp.innerText = `${
+        place.forecast.forecastday[index + 1].day.avgtemp_c
+      } °C`;
     });
   });
 };
@@ -74,13 +78,15 @@ const displayNextDays = () => {
 
 const displayNextWeathers = (place) => {
   futureWeatherIcons.forEach((icon, index) => {
-    icon.src = place.forecast.forecastday[index].day.condition.icon;
+    icon.src = place.forecast.forecastday[index + 1].day.condition.icon;
   });
 };
 
 const displayNextTemp = (place) => {
   futureTemp.forEach((temp, index) => {
-    temp.innerText = `${place.forecast.forecastday[index].day.avgtemp_f} °F`;
+    temp.innerText = `${
+      place.forecast.forecastday[index + 1].day.avgtemp_f
+    } °F`;
   });
 };
 
