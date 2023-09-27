@@ -67,8 +67,9 @@
     font-weight: bold;
 }
 
-.currentTitle, .futureTitle {
+.currentTitle, .hourlyTitle {
     font-size: 1.5rem;
+    margin-bottom: -15px;
 }
 
 .weather {
@@ -131,6 +132,9 @@
 .iconButton {
     border: none;
     background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .iconButton:hover {
@@ -139,9 +143,4 @@
 
 .selectedDay {
     background-color: var(--night);
-}
-
-.hourlyTitle {
-    font-size: 1.5rem;
-    margin-bottom: -10px;
 }
