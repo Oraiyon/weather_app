@@ -1,3 +1,4 @@
+const tempButtons = document.querySelector(".tempButtons");
 const fahrenheit = document.querySelector("#fahrenheit");
 const celsius = document.querySelector("#celsius");
 const searchBar = document.querySelector(".searchBar");
@@ -14,9 +15,7 @@ const futureTemp = document.querySelectorAll(".futureTemp");
 const hourlyWeatherAM = document.querySelector(".hourlyWeatherAM");
 const hourlyWeatherPM = document.querySelector(".hourlyWeatherPM");
 
-// does not switch temps of hourlys
-// see displayHourly()
-const switchMeasurements = (place) => {
+const switchMeasurements = (place, element, index) => {
   fahrenheit.addEventListener("click", () => {
     currentTemp.innerText = `${place.current.temp_f} °F`;
     futureTemp.forEach((temp, index) => {
@@ -24,6 +23,7 @@ const switchMeasurements = (place) => {
         place.forecast.forecastday[index + 1].day.avgtemp_f
       } °F`;
     });
+    element.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
   });
 
   celsius.addEventListener("click", () => {
@@ -33,6 +33,7 @@ const switchMeasurements = (place) => {
         place.forecast.forecastday[index + 1].day.avgtemp_c
       } °C`;
     });
+    element.innerText = `${place.forecast.forecastday[0].hour[index].temp_c} °C`;
   });
 };
 
@@ -52,6 +53,7 @@ const displayWeatherIcon = (place) => {
 
 const displayCurrentTemp = (place) => {
   currentTemp.innerText = `${place.current.temp_f} °F`;
+  switchMeasurements(place);
 };
 
 const displayRainAndSnow = (place) => {
@@ -93,13 +95,21 @@ const displayNextTemp = (place) => {
       place.forecast.forecastday[index + 1].day.avgtemp_f
     } °F`;
   });
+  switchMeasurements(place);
 };
 
-// includes switching F to C as temp is in DOM element
+const setDayOrNight = (array, index, element) => {
+  if (array[index].is_day === 0) {
+    element.classList.add("night");
+  } else {
+    element.classList.add("day");
+  }
+};
+
 const displayHourly = (place) => {
-  const hoursArray = place.forecast.forecastday[0].hour;
-  console.log(hoursArray);
   let hourIndex = 0;
+
+  const hoursArray = place.forecast.forecastday[0].hour;
   hoursArray.forEach((hour, index) => {
     if (hourIndex < 12) {
       const hours = document.createElement("div");
@@ -107,6 +117,7 @@ const displayHourly = (place) => {
       const time = place.forecast.forecastday[0].hour[index].time;
       hours.innerText = time.split(" ")[1];
       hourlyWeatherAM.appendChild(hours);
+      setDayOrNight(hoursArray, index, hours);
 
       const hourlyWeatherIcon = document.createElement("img");
       hourlyWeatherIcon.src =
@@ -117,13 +128,7 @@ const displayHourly = (place) => {
       hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
       hours.appendChild(hourlyTemp);
 
-      fahrenheit.addEventListener("click", () => {
-        hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
-      });
-
-      celsius.addEventListener("click", () => {
-        hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_c} °C`;
-      });
+      switchMeasurements(place, hourlyTemp, index);
 
       return hourIndex++;
     } else {
@@ -132,6 +137,7 @@ const displayHourly = (place) => {
       const time = place.forecast.forecastday[0].hour[index].time;
       hours.innerText = time.split(" ")[1];
       hourlyWeatherPM.appendChild(hours);
+      setDayOrNight(hoursArray, index, hours);
 
       const hourlyWeatherIcon = document.createElement("img");
       hourlyWeatherIcon.src =
@@ -142,19 +148,12 @@ const displayHourly = (place) => {
       hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
       hours.appendChild(hourlyTemp);
 
-      fahrenheit.addEventListener("click", () => {
-        hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
-      });
-
-      celsius.addEventListener("click", () => {
-        hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_c} °C`;
-      });
+      switchMeasurements(place, hourlyTemp, index);
     }
   });
 };
 
 const displayInfo = (place) => {
-  switchMeasurements(place);
   displayArea(place);
   displayWeatherIcon(place);
   displayCurrentWeather(place);
@@ -172,18 +171,23 @@ const fetchWeather = async (location) => {
       `https://api.weatherapi.com/v1/forecast.json?key=f4c93d4e6e0043c29fe45029232209&days=4&q=${location}`,
     );
     const weatherData = await response.json();
-    console.log(weatherData);
     displayInfo(weatherData);
   } catch (error) {
     console.log("ERROR", error);
   }
 };
 
+const revealTempButtons = (element) => {
+  element.setAttribute("style", "display:flex;");
+};
+
 submit.addEventListener("click", () => {
   if (searchBar.value === "") {
     console.log("Enter Location");
   } else {
-    fetchWeather(searchBar.value);
+    fetchWeather(searchBar.value).then((fulfilled) => {
+      revealTempButtons(tempButtons);
+    });
     searchBar.value = "";
   }
 });
