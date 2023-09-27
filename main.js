@@ -15,6 +15,7 @@ const futureTemp = document.querySelectorAll(".futureTemp");
 const hourlyWeatherAM = document.querySelector(".hourlyWeatherAM");
 const hourlyWeatherPM = document.querySelector(".hourlyWeatherPM");
 const iconButtons = document.querySelectorAll(".iconButton");
+const hourlyTitle = document.querySelector(".hourlyTitle");
 
 const switchMeasurements = (place, element, index) => {
   fahrenheit.addEventListener("click", () => {
@@ -66,17 +67,17 @@ const displayRainAndSnow = (place) => {
   }
 };
 
-const displayNextDays = () => {
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
+const displayNextDays = () => {
   const today = new Date().getDay();
   futureDay.forEach((day, index) => {
     const dayOfWeek = days[today + index + 1];
@@ -122,6 +123,14 @@ const displayHourly = (place) => {
   let hourIndex = 0;
 
   clearHourlys(hourlyWeatherAM, hourlyWeatherPM);
+
+  const today = new Date().getDay();
+
+  if (day === 0) {
+    hourlyTitle.innerText = "Today's Hourly Weather:";
+  } else {
+    hourlyTitle.innerText = `${days[today + day]}'s Hourly Weather`;
+  }
 
   const hoursArray = place.forecast.forecastday[day].hour;
   hoursArray.forEach((hour, index) => {
@@ -202,6 +211,7 @@ const revealTempButtons = (element) => {
 };
 
 const selectedTempButtons = () => {
+  fahrenheit.classList.add("selectedTemp");
   fahrenheit.addEventListener("click", () => {
     fahrenheit.classList.add("selectedTemp");
     celsius.classList.remove("selectedTemp");
@@ -221,7 +231,6 @@ submit.addEventListener("click", () => {
         revealTempButtons(tempButtons);
       })
       .then((fulfilled) => {
-        fahrenheit.classList.add("selectedTemp");
         selectedTempButtons();
       });
     searchBar.value = "";
