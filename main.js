@@ -14,6 +14,7 @@ const futureWeatherIcons = document.querySelectorAll(".futureWeatherIcon");
 const futureTemp = document.querySelectorAll(".futureTemp");
 const hourlyWeatherAM = document.querySelector(".hourlyWeatherAM");
 const hourlyWeatherPM = document.querySelector(".hourlyWeatherPM");
+const iconButtons = document.querySelectorAll(".iconButton");
 
 const switchMeasurements = (place, element, index) => {
   fahrenheit.addEventListener("click", () => {
@@ -115,28 +116,30 @@ const clearHourlys = (element1, element2) => {
   }
 };
 
+let day = 0;
+
 const displayHourly = (place) => {
   let hourIndex = 0;
 
   clearHourlys(hourlyWeatherAM, hourlyWeatherPM);
 
-  const hoursArray = place.forecast.forecastday[0].hour;
+  const hoursArray = place.forecast.forecastday[day].hour;
   hoursArray.forEach((hour, index) => {
     if (hourIndex < 12) {
       const hours = document.createElement("div");
       hours.classList.add("hours");
-      const time = place.forecast.forecastday[0].hour[index].time;
+      const time = place.forecast.forecastday[day].hour[index].time;
       hours.innerText = time.split(" ")[1];
       hourlyWeatherAM.appendChild(hours);
       setDayOrNight(hoursArray, index, hours);
 
       const hourlyWeatherIcon = document.createElement("img");
       hourlyWeatherIcon.src =
-        place.forecast.forecastday[0].hour[index].condition.icon;
+        place.forecast.forecastday[day].hour[index].condition.icon;
       hours.appendChild(hourlyWeatherIcon);
 
       const hourlyTemp = document.createElement("div");
-      hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
+      hourlyTemp.innerText = `${place.forecast.forecastday[day].hour[index].temp_f} °F`;
       hours.appendChild(hourlyTemp);
 
       switchMeasurements(place, hourlyTemp, index);
@@ -145,18 +148,18 @@ const displayHourly = (place) => {
     } else {
       const hours = document.createElement("div");
       hours.classList.add("hours");
-      const time = place.forecast.forecastday[0].hour[index].time;
+      const time = place.forecast.forecastday[day].hour[index].time;
       hours.innerText = time.split(" ")[1];
       hourlyWeatherPM.appendChild(hours);
       setDayOrNight(hoursArray, index, hours);
 
       const hourlyWeatherIcon = document.createElement("img");
       hourlyWeatherIcon.src =
-        place.forecast.forecastday[0].hour[index].condition.icon;
+        place.forecast.forecastday[day].hour[index].condition.icon;
       hours.appendChild(hourlyWeatherIcon);
 
       const hourlyTemp = document.createElement("div");
-      hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
+      hourlyTemp.innerText = `${place.forecast.forecastday[day].hour[index].temp_f} °F`;
       hours.appendChild(hourlyTemp);
 
       switchMeasurements(place, hourlyTemp, index);
@@ -174,6 +177,12 @@ const displayInfo = (place) => {
   displayNextWeathers(place);
   displayNextTemp(place);
   displayHourly(place);
+  iconButtons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      day = index;
+      displayHourly(place);
+    });
+  });
 };
 
 const fetchWeather = async (location) => {
@@ -182,7 +191,6 @@ const fetchWeather = async (location) => {
       `https://api.weatherapi.com/v1/forecast.json?key=f4c93d4e6e0043c29fe45029232209&days=4&q=${location}`,
     );
     const weatherData = await response.json();
-    console.log(weatherData);
     displayInfo(weatherData);
   } catch (error) {
     console.log("ERROR", error);
@@ -206,7 +214,7 @@ const selectedTempButtons = () => {
 
 submit.addEventListener("click", () => {
   if (searchBar.value === "") {
-    console.log("Enter Location");
+    alert("Enter Location");
   } else {
     fetchWeather(searchBar.value)
       .then((fulfilled) => {
