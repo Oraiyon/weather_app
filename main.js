@@ -4,6 +4,7 @@ const celsius = document.querySelector("#celsius");
 const searchBar = document.querySelector(".searchBar");
 const submit = document.querySelector(".submit");
 const area = document.querySelector(".area");
+const currentTitle = document.querySelector(".currentTitle");
 const weatherIcon = document.querySelector(".weatherIcon");
 const currentWeather = document.querySelector(".currentWeather");
 const currentTemp = document.querySelector(".currentTemp");
@@ -46,6 +47,7 @@ const displayArea = (place) => {
 };
 
 const displayCurrentWeather = (place) => {
+  currentTitle.innerText = "Current Weather:";
   currentWeather.innerText = place.current.condition.text;
 };
 
@@ -129,50 +131,44 @@ const displayHourly = (place) => {
   if (day === 0) {
     hourlyTitle.innerText = "Today's Hourly Weather:";
   } else {
-    hourlyTitle.innerText = `${days[today + day]}'s Hourly Weather`;
+    hourlyTitle.innerText = `${days[today + day]}'s Hourly Weather:`;
   }
 
   const hoursArray = place.forecast.forecastday[day].hour;
   hoursArray.forEach((hour, index) => {
+    const hours = document.createElement("div");
+    hours.classList.add("hours");
+    const time = place.forecast.forecastday[day].hour[index].time;
+    hours.innerText = time.split(" ")[1];
+
+    setDayOrNight(hoursArray, index, hours);
+
+    const hourlyWeatherIcon = document.createElement("img");
+    hourlyWeatherIcon.src =
+      place.forecast.forecastday[day].hour[index].condition.icon;
+    hours.appendChild(hourlyWeatherIcon);
+
+    const hourlyTemp = document.createElement("div");
+    hourlyTemp.innerText = `${place.forecast.forecastday[day].hour[index].temp_f} °F`;
+    hours.appendChild(hourlyTemp);
+
+    switchMeasurements(place, hourlyTemp, index);
+
     if (hourIndex < 12) {
-      const hours = document.createElement("div");
-      hours.classList.add("hours");
-      const time = place.forecast.forecastday[day].hour[index].time;
-      hours.innerText = time.split(" ")[1];
       hourlyWeatherAM.appendChild(hours);
-      setDayOrNight(hoursArray, index, hours);
-
-      const hourlyWeatherIcon = document.createElement("img");
-      hourlyWeatherIcon.src =
-        place.forecast.forecastday[day].hour[index].condition.icon;
-      hours.appendChild(hourlyWeatherIcon);
-
-      const hourlyTemp = document.createElement("div");
-      hourlyTemp.innerText = `${place.forecast.forecastday[day].hour[index].temp_f} °F`;
-      hours.appendChild(hourlyTemp);
-
-      switchMeasurements(place, hourlyTemp, index);
-
       return hourIndex++;
     } else {
-      const hours = document.createElement("div");
-      hours.classList.add("hours");
-      const time = place.forecast.forecastday[day].hour[index].time;
-      hours.innerText = time.split(" ")[1];
       hourlyWeatherPM.appendChild(hours);
-      setDayOrNight(hoursArray, index, hours);
-
-      const hourlyWeatherIcon = document.createElement("img");
-      hourlyWeatherIcon.src =
-        place.forecast.forecastday[day].hour[index].condition.icon;
-      hours.appendChild(hourlyWeatherIcon);
-
-      const hourlyTemp = document.createElement("div");
-      hourlyTemp.innerText = `${place.forecast.forecastday[day].hour[index].temp_f} °F`;
-      hours.appendChild(hourlyTemp);
-
-      switchMeasurements(place, hourlyTemp, index);
     }
+  });
+};
+
+const displayOtherHourlys = (place) => {
+  iconButtons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      day = index;
+      displayHourly(place);
+    });
   });
 };
 
@@ -186,12 +182,7 @@ const displayInfo = (place) => {
   displayNextWeathers(place);
   displayNextTemp(place);
   displayHourly(place);
-  iconButtons.forEach((button, index) => {
-    button.addEventListener("click", () => {
-      day = index;
-      displayHourly(place);
-    });
-  });
+  displayOtherHourlys(place);
 };
 
 const fetchWeather = async (location) => {
@@ -202,7 +193,7 @@ const fetchWeather = async (location) => {
     const weatherData = await response.json();
     displayInfo(weatherData);
   } catch (error) {
-    console.log("ERROR", error);
+    alert("INVALID LOCATION");
   }
 };
 
@@ -226,13 +217,10 @@ submit.addEventListener("click", () => {
   if (searchBar.value === "") {
     alert("Enter Location");
   } else {
-    fetchWeather(searchBar.value)
-      .then((fulfilled) => {
-        revealTempButtons(tempButtons);
-      })
-      .then((fulfilled) => {
-        selectedTempButtons();
-      });
+    fetchWeather(searchBar.value).then((fulfilled) => {
+      revealTempButtons(tempButtons);
+      selectedTempButtons();
+    });
     searchBar.value = "";
   }
 });
