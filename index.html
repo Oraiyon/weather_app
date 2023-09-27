@@ -6,19 +6,24 @@
     <title>Weather App</title>
     <link rel="stylesheet" href="styles.css">
     <script src="main.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <div class="tempButtons">
-            <button class="changeType" id="fahrenheit">°F</button>
-            <button class="changeType" id="celsius">°C</button>
-        </div>
         <div class="search">
             <input type="text" class="searchBar" placeholder="Enter Location">
             <button type="submit" class="submit">Search</button>
         </div>
         <div class="information">
-            <div class="area"></div>
+            <div class="header">
+                <div class="area"></div>
+                <div class="tempButtons">
+                    <button class="changeType" id="fahrenheit">°F</button>
+                    <button class="changeType" id="celsius">°C</button>
+                </div>
+            </div>
             <div class="weather">
                 <img src="" alt="" class="weatherIcon">
                 <div class="today">
@@ -47,7 +52,10 @@
                     </div>
                 </div>
             </div>
-            <div class="hourlyWeather"></div>
+            <div class="hoursTable">
+                <div class="hourlyWeatherAM"></div>
+                <div class="hourlyWeatherPM"></div>
+            </div>
         </div>
     </div>
 </body>
