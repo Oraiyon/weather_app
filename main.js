@@ -11,7 +11,8 @@ const snow = document.querySelector(".snow");
 const futureDay = document.querySelectorAll(".futureDay");
 const futureWeatherIcons = document.querySelectorAll(".futureWeatherIcon");
 const futureTemp = document.querySelectorAll(".futureTemp");
-const hourlyWeather = document.querySelector(".hourlyWeather");
+const hourlyWeatherAM = document.querySelector(".hourlyWeatherAM");
+const hourlyWeatherPM = document.querySelector(".hourlyWeatherPM");
 
 // does not switch temps of hourlys
 // see displayHourly()
@@ -98,29 +99,57 @@ const displayNextTemp = (place) => {
 const displayHourly = (place) => {
   const hoursArray = place.forecast.forecastday[0].hour;
   console.log(hoursArray);
+  let hourIndex = 0;
   hoursArray.forEach((hour, index) => {
-    const hours = document.createElement("div");
-    hours.classList.add("hours");
-    const time = place.forecast.forecastday[0].hour[index].time;
-    hours.innerText = time.split(" ")[1];
-    hourlyWeather.appendChild(hours);
+    if (hourIndex < 12) {
+      const hours = document.createElement("div");
+      hours.classList.add("hours");
+      const time = place.forecast.forecastday[0].hour[index].time;
+      hours.innerText = time.split(" ")[1];
+      hourlyWeatherAM.appendChild(hours);
 
-    const hourlyWeatherIcon = document.createElement("img");
-    hourlyWeatherIcon.src =
-      place.forecast.forecastday[0].hour[index].condition.icon;
-    hours.appendChild(hourlyWeatherIcon);
+      const hourlyWeatherIcon = document.createElement("img");
+      hourlyWeatherIcon.src =
+        place.forecast.forecastday[0].hour[index].condition.icon;
+      hours.appendChild(hourlyWeatherIcon);
 
-    const hourlyTemp = document.createElement("div");
-    hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
-    hours.appendChild(hourlyTemp);
-
-    fahrenheit.addEventListener("click", () => {
+      const hourlyTemp = document.createElement("div");
       hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
-    });
+      hours.appendChild(hourlyTemp);
 
-    celsius.addEventListener("click", () => {
-      hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_c} °C`;
-    });
+      fahrenheit.addEventListener("click", () => {
+        hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
+      });
+
+      celsius.addEventListener("click", () => {
+        hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_c} °C`;
+      });
+
+      return hourIndex++;
+    } else {
+      const hours = document.createElement("div");
+      hours.classList.add("hours");
+      const time = place.forecast.forecastday[0].hour[index].time;
+      hours.innerText = time.split(" ")[1];
+      hourlyWeatherPM.appendChild(hours);
+
+      const hourlyWeatherIcon = document.createElement("img");
+      hourlyWeatherIcon.src =
+        place.forecast.forecastday[0].hour[index].condition.icon;
+      hours.appendChild(hourlyWeatherIcon);
+
+      const hourlyTemp = document.createElement("div");
+      hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
+      hours.appendChild(hourlyTemp);
+
+      fahrenheit.addEventListener("click", () => {
+        hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_f} °F`;
+      });
+
+      celsius.addEventListener("click", () => {
+        hourlyTemp.innerText = `${place.forecast.forecastday[0].hour[index].temp_c} °C`;
+      });
+    }
   });
 };
 
