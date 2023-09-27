@@ -106,8 +106,19 @@ const setDayOrNight = (array, index, element) => {
   }
 };
 
+const clearHourlys = (element1, element2) => {
+  while (element1.firstChild) {
+    element1.removeChild(element1.firstChild);
+  }
+  while (element2.firstChild) {
+    element2.removeChild(element2.firstChild);
+  }
+};
+
 const displayHourly = (place) => {
   let hourIndex = 0;
+
+  clearHourlys(hourlyWeatherAM, hourlyWeatherPM);
 
   const hoursArray = place.forecast.forecastday[0].hour;
   hoursArray.forEach((hour, index) => {
@@ -171,6 +182,7 @@ const fetchWeather = async (location) => {
       `https://api.weatherapi.com/v1/forecast.json?key=f4c93d4e6e0043c29fe45029232209&days=4&q=${location}`,
     );
     const weatherData = await response.json();
+    console.log(weatherData);
     displayInfo(weatherData);
   } catch (error) {
     console.log("ERROR", error);
@@ -181,13 +193,29 @@ const revealTempButtons = (element) => {
   element.setAttribute("style", "display:flex;");
 };
 
+const selectedTempButtons = () => {
+  fahrenheit.addEventListener("click", () => {
+    fahrenheit.classList.add("selectedTemp");
+    celsius.classList.remove("selectedTemp");
+  });
+  celsius.addEventListener("click", () => {
+    fahrenheit.classList.remove("selectedTemp");
+    celsius.classList.add("selectedTemp");
+  });
+};
+
 submit.addEventListener("click", () => {
   if (searchBar.value === "") {
     console.log("Enter Location");
   } else {
-    fetchWeather(searchBar.value).then((fulfilled) => {
-      revealTempButtons(tempButtons);
-    });
+    fetchWeather(searchBar.value)
+      .then((fulfilled) => {
+        revealTempButtons(tempButtons);
+      })
+      .then((fulfilled) => {
+        fahrenheit.classList.add("selectedTemp");
+        selectedTempButtons();
+      });
     searchBar.value = "";
   }
 });
