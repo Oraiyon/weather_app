@@ -3,6 +3,9 @@
     margin: 0;
     box-sizing: border-box;
     font-size: 1rem;
+    font-family: 'Rubik', sans-serif;
+    --night: rgb(12, 12, 138);
+    --day: rgb(250, 242, 133);
 }
 
 .container {
@@ -13,22 +16,132 @@
     align-items: center;
 }
 
-.tempButtons {
+.search {
     display: flex;
+    width: 80%;
+    margin: 10px 0;
+}
+
+.searchBar {
+    flex: 1 0 auto;
+    padding: 4px;
+}
+
+.submit {
+    padding: 4px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tempButtons {
+    display: none;
+}
+
+.tempButtons button{
+    padding: 5.75px;
+}
+
+.submit:hover, .tempButtons button:hover {
+    background-color: var(--day);
+    color: black;
+}
+
+.selectedTemp {
+    background-color: var(--night);
+    color: white;
 }
 
 .information {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    width: 80%;
+}
+
+.area {
+    font-size: 1.75rem;
+    font-weight: bold;
+}
+
+.currentTitle, .futureTitle {
+    font-size: 1.5rem;
 }
 
 .weather {
     display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 20px;
+}
+
+.weather img {
+    width: 125px;
+}
+
+.today div {
+    font-size: 1.25rem;
 }
 
 .futureWeathers {
     display: flex;
+    justify-content: space-between;
     gap: 20px;
+}
+
+.futureWeather {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.futureTemp {
+    align-self: center;
+}
+
+.hoursTable {
+    display: flex;
+}
+
+.hourlyWeatherAM , .hourlyWeatherPM {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.hours {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.night {
+    background-color:var(--night);
+    color: white;
+}
+
+.day {
+    background-color: var(--day);
+}
+
+.iconButton {
+    border: none;
+    background-color: white;
+}
+
+.iconButton:hover {
+    background-color: var(--day);
+}
+
+.selectedDay {
+    background-color: var(--night);
+}
+
+.hourlyTitle {
+    font-size: 1.5rem;
+    margin-bottom: -10px;
 }
