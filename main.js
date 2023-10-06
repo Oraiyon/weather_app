@@ -82,16 +82,8 @@ const days = [
 const displayNextDays = () => {
   const today = new Date().getDay();
   futureDay.forEach((day, index) => {
-    let dayOfWeek = days[today + index + 1];
-    if (dayOfWeek === undefined && index === 1) {
-      dayOfWeek = days[0];
-      day.innerText = dayOfWeek;
-    } else if (dayOfWeek === undefined && index === 2) {
-      dayOfWeek = days[1];
-      day.innerText = dayOfWeek;
-    } else {
-      day.innerText = dayOfWeek;
-    }
+    const dayOfWeek = days[(today + index + 1) % days.length];
+    day.innerText = dayOfWeek;
   });
 };
 
@@ -139,7 +131,9 @@ const displayHourly = (place) => {
   if (day === 0) {
     hourlyTitle.innerText = "Today's Hourly Forecast:";
   } else {
-    hourlyTitle.innerText = `${days[today + day]}'s Hourly Forecast:`;
+    hourlyTitle.innerText = `${
+      days[(today + day) % days.length]
+    }'s Hourly Forecast:`;
   }
 
   const hoursArray = place.forecast.forecastday[day].hour;
